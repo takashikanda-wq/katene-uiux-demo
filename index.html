@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Club カテエネ — 改善UI プロトタイプ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Kaisei+Decol:wght@400;700&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<noscript><link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Kaisei+Decol:wght@400;700&display=swap" rel="stylesheet"></noscript>
+<style>
+:root {
+  --ko: #F5841F; --ky: #FFC800; --kr: #E83820;
+  --kt: #009B8F; --kn: #1A2040;
+  --font: 'Noto Sans JP', sans-serif;
+  --font-logo: 'Kaisei Decol', serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: var(--font); background: #0d0d14; }
+@media (max-width: 480px) {
+  html { background: #fff !important; }
+  body { background: #fff !important; }
+}
+.desktop-shell { display: flex; min-height: 100vh; align-items: stretch; }
+.info-panel { width: 340px; flex-shrink: 0; background: #0d0d14; border-right: 1px solid rgba(255,255,255,0.07); display: flex; flex-direction: column; padding: 36px 28px; gap: 0; overflow-y: auto; }
+.info-logo { font-family: var(--font-logo); font-size: 22px; font-weight: 700; color: var(--ko); margin-bottom: 4px; }
+.info-logo .club { font-size: 11px; font-style: italic; }
+.info-subtitle { font-size: 11px; color: rgba(255,255,255,0.25); margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+.info-badge { display: inline-flex; align-items: center; gap: 5px; background: rgba(245,132,31,0.1); border: 1px solid rgba(245,132,31,0.25); color: var(--ko); font-size: 10px; font-weight: 700; padding: 4px 12px; border-radius: 20px; margin-bottom: 16px; letter-spacing: 0.06em; }
+.info-badge::before { content:''; width:5px; height:5px; background:var(--ko); border-radius:50%; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.info-title { font-size: 20px; font-weight: 800; color: #f1f5f9; line-height: 1.4; margin-bottom: 12px; letter-spacing: -0.01em; }
+.info-title span { color: var(--ko); }
+.info-desc { font-size: 12px; color: #475569; line-height: 1.8; margin-bottom: 24px; }
+.feat-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 28px; }
+.feat-item { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; cursor: pointer; transition: all 0.2s; }
+.feat-item:hover, .feat-item.active { border-color: rgba(245,132,31,0.4); background: rgba(245,132,31,0.05); }
+.feat-num { width: 20px; height: 20px; background: var(--ko); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 800; color: #fff; flex-shrink: 0; margin-top: 1px; }
+.feat-text h4 { font-size: 11px; font-weight: 700; color: #e2e8f0; line-height: 1.4; }
+.feat-text p { font-size: 10px; color: #475569; margin-top: 1px; line-height: 1.4; }
+.qr-section { margin-top: auto; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.07); }
+.qr-label { font-size: 10px; font-weight: 700; color: #334155; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px; }
+.qr-box { background: #fff; border-radius: 14px; padding: 14px; display: flex; gap: 12px; align-items: center; }
+.qr-canvas-wrap { width: 80px; height: 80px; flex-shrink: 0; }
+#qrCanvas { width: 80px; height: 80px; image-rendering: pixelated; }
+.qr-info h5 { font-size: 11px; font-weight: 700; color: #1a1a1a; margin-bottom: 4px; }
+.qr-info p { font-size: 10px; color: #888; line-height: 1.5; }
+.qr-url { margin-top: 10px; font-size: 10px; color: #475569; word-break: break-all; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 8px; padding: 8px 12px; line-height: 1.5; }
+.phone-center { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 32px; background: radial-gradient(ellipse at center, rgba(245,132,31,0.04) 0%, transparent 70%); }
+.phone-shell { background: #1a1a1c; border-radius: 44px; padding: 12px; box-shadow: 0 0 0 1px #38383a, 0 0 0 3px #1c1c1e, 0 0 0 4px #48484a, 0 40px 80px rgba(0,0,0,0.8), 0 0 120px rgba(245,132,31,0.07); width: 360px; }
+.phone-notch-bar { width: 110px; height: 26px; background: #1a1a1c; border-radius: 0 0 18px 18px; margin: 0 auto 4px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.notch-pill { width: 60px; height: 7px; background: #0a0a0a; border-radius: 4px; }
+.notch-dot { width: 10px; height: 10px; background: #0a0a0a; border-radius: 50%; }
+.phone-screen { background: #fff; border-radius: 34px; overflow: hidden; height: 700px; overflow-y: auto; scroll-behavior: smooth; scrollbar-width: none; }
+.phone-screen::-webkit-scrollbar { display: none; }
+.right-panel { width: 280px; flex-shrink: 0; background: #0d0d14; border-left: 1px solid rgba(255,255,255,0.07); padding: 36px 24px; overflow-y: auto; }
+.rp-title { font-size: 11px; font-weight: 700; color: #334155; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 16px; }
+.scrollmap { display: flex; flex-direction: column; gap: 6px; margin-bottom: 32px; }
+.sm-item { display: flex; gap: 8px; align-items: center; padding: 8px 10px; border-radius: 8px; cursor: pointer; border: 1px solid transparent; transition: all 0.2s; font-size: 11px; color: #475569; font-weight: 500; }
+.sm-item:hover { background: rgba(255,255,255,0.03); color: #94a3b8; }
+.sm-item.active { background: rgba(245,132,31,0.08); border-color: rgba(245,132,31,0.25); color: var(--ko); }
+.sm-dot { width: 6px; height: 6px; background: currentColor; border-radius: 50%; flex-shrink: 0; }
+.sm-sev { margin-left: auto; font-size: 8px; font-weight: 700; padding: 1px 6px; border-radius: 4px; }
+.sm-sev.h { background: rgba(232,56,32,0.15); color: #E83820; }
+.sm-sev.m { background: rgba(245,132,31,0.15); color: var(--ko); }
+.sm-sev.l { background: rgba(0,155,143,0.15); color: var(--kt); }
+.rp-hint { font-size: 11px; color: #1e293b; line-height: 1.7; padding: 12px; background: rgba(255,255,255,0.02); border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 20px; }
+.dl-qr-btn { width: 100%; padding: 10px; background: rgba(245,132,31,0.1); border: 1px solid rgba(245,132,31,0.3); color: var(--ko); border-radius: 10px; font-size: 11px; font-weight: 700; font-family: var(--font); cursor: pointer; transition: all 0.2s; margin-bottom: 8px; }
+.dl-qr-btn:hover { background: rgba(245,132,31,0.18); }
+@media (max-width: 768px) { .desktop-shell { flex-direction: column; } .info-panel { width: 100%; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.07); padding: 20px 16px; } .feat-list { display: none; } .qr-section { margin-top: 0; } .right-panel { display: none; } .phone-center { padding: 20px 12px 40px; } .phone-shell { width: 100%; max-width: 400px; } .phone-screen { height: calc(100svh - 280px); min-height: 480px; } }
+@media (max-width: 600px) { .info-panel { display: none; } .desktop-shell { background: #fff !important; } .phone-center { padding: 10px 0 40px; background: none !important; } .phone-shell { max-width: 100%; box-shadow: none; border-radius: 12px; } .phone-screen { height: calc(100svh - 60px); } }
+@media (max-width: 480px) { html, body { background: #fff !important; margin: 0; padding: 0; width: 100%; overflow-x: hidden; } .info-panel { display: none !important; } .right-panel { display: none !important; } .desktop-shell { display: block !important; min-height: 100vh; background: #fff !important; padding: 0 !important; margin: 0 !important; } .phone-center { padding: 0 !important; background: none !important; display: block !important; margin: 0 !important; width: 100% !important; } .phone-shell { background: transparent !important; border-radius: 0 !important; padding: 0 !important; box-shadow: none !important; width: 100% !important; max-width: 100% !important; margin: 0 !important; } .phone-notch-bar { display: none !important; } .phone-screen { border-radius: 0 !important; height: auto !important; min-height: 100dvh !important; overflow-x: hidden !important; overflow-y: visible !important; width: 100% !important; max-width: 100% !important; margin: 0 !important; } .k-status { position: fixed !important; top: 0; left: 0; right: 0; z-index: 100; } .k-header { position: fixed !important; top: 34px; left: 0; right: 0; z-index: 90; } .k-bottom-nav { position: fixed !important; bottom: 0; left: 0; right: 0; z-index: 99; } .k-hero { margin-top: 78px !important; } .k-footer { padding-bottom: 80px !important; } .sp-proto-banner { display: flex !important; justify-content: space-between; align-items: center; background: #1A2040; color: #F5841F; font-size: 10px; font-weight: 700; padding: 5px 14px; position: fixed; top: 0; left: 0; right: 0; z-index: 200; letter-spacing: 0.02em; height: 26px; box-sizing: border-box; } .k-status { top: 26px !important; } .k-header { top: 60px !important; } .k-hero { margin-top: 104px !important; } }
+.sp-proto-banner { display: none; }
+.k-status { background:#fff; padding:10px 18px 5px; display:flex; justify-content:space-between; align-items:center; position:sticky; top:0; z-index:50; }
+.k-time { font-size:12px; font-weight:800; color:#000; }
+.k-header { background:#fff; padding:8px 14px 7px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #f0f0f0; position:sticky; top:34px; z-index:40; box-shadow:0 1px 4px rgba(0,0,0,0.05); }
+.k-logo-wrap { display:flex; flex-direction:column; }
+.k-miraiz { font-size:8px; color:#999; display:flex; align-items:center; gap:3px; }
+.k-miraiz::before { content:''; display:inline-block; width:8px; height:8px; background:var(--ko); border-radius:50%; }
+.k-logo { font-family:var(--font-logo); font-size:19px; font-weight:700; color:var(--ko); line-height:1; }
+.k-logo .club { font-size:8px; font-style:italic; }
+.k-hbtns { display:flex; gap:5px; }
+.k-btn-login { border:1.5px solid var(--ko); background:transparent; color:var(--ko); padding:4px 9px; border-radius:16px; font-size:10px; font-family:var(--font); font-weight:700; cursor:pointer; }
+.k-btn-reg { border:none; background:var(--ko); color:#fff; padding:5px 9px; border-radius:16px; font-size:10px; font-family:var(--font); font-weight:700; cursor:pointer; }
+.k-hero { position:relative; background:#fff; overflow:hidden; }
+.k-hero-shapes { position:absolute; top:0; left:0; right:0; bottom:0; pointer-events:none; z-index:0; }
+.k-circle { position:absolute; width:240px; height:240px; background:var(--ky); border-radius:50%; top:20px; right:-70px; }
+.k-wave { position:absolute; bottom:-1px; left:0; right:0; height:40px; background:#fff; clip-path:ellipse(60% 100% at 50% 100%); }
+.k-hero-top { position:relative; z-index:2; padding:14px 16px 0; }
+.k-hero-miraiz { font-size:8px; color:#aaa; display:flex; align-items:center; gap:3px; margin-bottom:2px; }
+.k-hero-miraiz::before { content:''; display:inline-block; width:8px; height:8px; background:var(--ko); border-radius:50%; }
+.k-hero-logo { font-family:var(--font-logo); font-size:38px; font-weight:700; color:var(--ko); line-height:1; margin-bottom:3px; }
+.k-hero-logo .club { font-size:11px; font-style:italic; }
+.k-hero-tagline { font-size:12px; font-weight:700; color:#333; margin-bottom:10px; }
+.k-100p-badge { display:inline-flex; align-items:center; gap:5px; background:linear-gradient(135deg,var(--kr),var(--ko)); color:#fff; padding:5px 12px 5px 6px; border-radius:20px; font-size:10px; font-weight:700; margin-bottom:12px; box-shadow:0 3px 8px rgba(232,56,32,0.3); }
+.k-100p-coin { width:20px; height:20px; background:gold; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:9px; font-weight:900; color:#7a5000; }
+.k-hero-photo { position:relative; z-index:1; height:185px; overflow:hidden; margin-top:-6px; }
+.k-hero-photo img { width:100%; height:100%; object-fit:cover; object-position:center 20%; display:block; }
+.k-hero-photo .fallback { width:100%; height:100%; background:linear-gradient(135deg,#FFC800,#F5841F); display:none; align-items:center; justify-content:center; font-size:13px; font-weight:700; color:rgba(255,255,255,0.7); }
+.k-cta-area { background:#fff; padding:14px 14px 16px; position:relative; z-index:2; }
+.k-cta-main { width:100%; background:linear-gradient(135deg,var(--ko),var(--kr)); color:#fff; border:none; border-radius:40px; padding:14px 18px; font-size:14px; font-weight:900; font-family:var(--font); display:flex; align-items:center; justify-content:space-between; cursor:pointer; box-shadow:0 5px 16px rgba(245,132,31,0.4); margin-bottom:8px; transition:transform 0.15s; }
+.k-cta-main:active { transform:scale(0.98); }
+.k-cta-arrow { width:26px; height:26px; background:rgba(255,255,255,0.25); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; }
+.k-incentive { background:#fff8ee; border:1px solid #ffd8a8; border-radius:8px; padding:7px 12px; text-align:center; font-size:11px; font-weight:700; color:var(--ko); margin-bottom:8px; }
+.k-incentive .pt { font-size:14px; color:var(--kr); }
+.k-cta-sub { width:100%; background:#fff; border:2px solid var(--ko); color:var(--ko); border-radius:40px; padding:10px; font-size:12px; font-weight:700; font-family:var(--font); cursor:pointer; }
+.k-seg { background:#fafafa; padding:14px; border-bottom:4px solid #e8e8e8; }
+.k-tabs { display:flex; background:#e8e8e8; border-radius:8px; padding:3px; gap:2px; margin-bottom:12px; }
+.k-tab { flex:1; padding:7px 4px; border-radius:6px; font-size:11px; font-weight:700; text-align:center; cursor:pointer; color:#888; background:transparent; border:none; font-family:var(--font); transition:all 0.2s; }
+.k-tab.active { background:#fff; color:var(--ko); box-shadow:0 2px 6px rgba(0,0,0,0.1); }
+.k-seg-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.k-seg-card { background:#fff; border:1.5px solid #e8e8e8; border-radius:12px; padding:12px 10px; cursor:pointer; }
+.k-seg-card.wide { grid-column:1/-1; display:flex; align-items:center; justify-content:space-between; border-color:var(--ko); background:#fff8f2; }
+.k-seg-icon { font-size:20px; margin-bottom:4px; }
+.k-seg-label { font-size:11px; font-weight:700; color:#1a1a1a; line-height:1.3; }
+.k-section { padding:18px 0 14px; border-bottom:4px solid #f4f4f4; }
+.k-sec-head { display:flex; justify-content:space-between; align-items:flex-end; padding:0 14px 12px; }
+.k-sec-title { font-size:15px; font-weight:900; color:#1a1a1a; line-height:1.3; }
+.k-sec-title .acc { color:var(--ko); }
+.k-sec-more { font-size:11px; font-weight:700; color:var(--ko); }
+.k-plans { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:0 14px; }
+.k-plan-card { background:#fff; border:1.5px solid #e8e8e8; border-radius:14px; padding:12px 10px; cursor:pointer; position:relative; }
+.k-plan-card.feat { grid-column:1/-1; border-color:var(--ko); background:linear-gradient(135deg,#fff5eb,#fff); }
+.k-plan-card.feat::before { content:'おすすめ'; position:absolute; top:-1px; right:12px; background:var(--ko); color:#fff; font-size:8px; font-weight:700; padding:2px 8px 3px; border-radius:0 0 6px 6px; }
+.k-plan-icon { font-size:20px; margin-bottom:6px; }
+.k-plan-name { font-size:12px; font-weight:900; color:#1a1a1a; margin-bottom:3px; }
+.k-plan-desc { font-size:9px; color:#777; line-height:1.5; margin-bottom:5px; }
+.k-plan-price { font-size:10px; font-weight:700; color:var(--ko); margin-bottom:4px; }
+.k-plan-link { font-size:10px; font-weight:700; color:var(--ko); }
+.k-compare-wrap { padding:10px 14px 0; }
+.k-compare-btn { width:100%; border:1.5px solid var(--kt); background:transparent; color:var(--kt); padding:9px; border-radius:8px; font-size:11px; font-weight:700; font-family:var(--font); cursor:pointer; }
+.k-carousel-scroll { display:flex; gap:10px; overflow-x:auto; scrollbar-width:none; padding:0 14px 4px; scroll-snap-type:x mandatory; }
+.k-carousel-scroll::-webkit-scrollbar { display:none; }
+.k-camp-card { min-width:200px; border-radius:14px; overflow:hidden; flex-shrink:0; scroll-snap-align:start; border:1.5px solid #e8e8e8; position:relative; }
+.k-camp-img { width:100%; height:110px; object-fit:cover; display:block; }
+.k-camp-img-fill { width:100%; height:110px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; color:rgba(255,255,255,0.8); }
+.k-camp-tag { position:absolute; top:8px; left:8px; background:var(--kr); color:#fff; font-size:8px; font-weight:700; padding:2px 7px; border-radius:4px; }
+.k-camp-body { padding:9px 10px 10px; background:#fff; }
+.k-camp-title { font-size:12px; font-weight:900; color:#1a1a1a; margin-bottom:3px; line-height:1.3; }
+.k-camp-desc { font-size:9px; color:#777; line-height:1.4; margin-bottom:6px; }
+.k-camp-btn { display:inline-block; background:var(--ko); color:#fff; font-size:9px; font-weight:700; padding:4px 12px; border-radius:16px; }
+.k-ind { display:flex; align-items:center; justify-content:center; gap:6px; padding-top:8px; }
+.k-ind-count { font-size:10px; font-weight:700; color:var(--ko); background:#fff0e0; padding:2px 7px; border-radius:8px; }
+.k-ind-dots { display:flex; gap:3px; }
+.k-ind-dot { width:5px; height:5px; background:#e0e0e0; border-radius:50%; }
+.k-ind-dot.on { width:14px; background:var(--ko); border-radius:3px; }
+.k-important-box { margin:0 14px 8px; background:#fff5f5; border:1px solid #fecaca; border-radius:8px; padding:8px 12px; }
+.k-imp-head { font-size:9px; font-weight:700; color:#dc2626; margin-bottom:5px; }
+.k-imp-item { font-size:10px; color:#666; padding:3px 0; border-bottom:1px dashed #fca5a5; line-height:1.4; }
+.k-imp-item:last-child { border-bottom:none; }
+.k-notice-list { padding:0 14px; }
+.k-notice-item { display:flex; gap:8px; align-items:flex-start; padding:8px 0; border-bottom:1px solid #f4f4f4; }
+.k-notice-item:last-child { border-bottom:none; }
+.k-ntag { font-size:8px; font-weight:700; padding:2px 6px; border-radius:3px; white-space:nowrap; flex-shrink:0; margin-top:1px; }
+.k-ntag.cp { background:#fff0e0; color:var(--ko); }
+.k-ntag.info { background:#f4f4f4; color:#888; }
+.k-ntext { font-size:11px; color:#1a1a1a; line-height:1.5; flex:1; }
+.k-ndate { font-size:9px; color:#aaa; white-space:nowrap; flex-shrink:0; margin-top:2px; }
+.k-support-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; padding:0 14px; }
+.k-support-item { background:#fafafa; border:1px solid #e8e8e8; border-radius:10px; padding:10px 6px; text-align:center; cursor:pointer; }
+.k-sup-icon { font-size:18px; margin-bottom:4px; display:block; }
+.k-sup-label { font-size:9px; font-weight:700; color:#1a1a1a; line-height:1.3; }
+.k-footer { background:var(--kn); padding:20px 14px 70px; }
+.k-footer-logo { font-family:var(--font-logo); font-size:18px; font-weight:700; color:var(--ko); margin-bottom:3px; }
+.k-footer-co { font-size:9px; color:rgba(255,255,255,0.35); margin-bottom:14px; padding-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.06); }
+.k-fg { margin-bottom:12px; }
+.k-fg-title { font-size:8px; font-weight:700; color:rgba(255,255,255,0.35); letter-spacing:0.1em; text-transform:uppercase; margin-bottom:6px; }
+.k-fg-links { display:flex; flex-wrap:wrap; gap:4px; }
+.k-flink { font-size:10px; color:rgba(255,255,255,0.6); padding:3px 8px; background:rgba(255,255,255,0.05); border-radius:5px; display:flex; align-items:center; gap:2px; }
+.k-flink .ext { font-size:8px; color:rgba(255,255,255,0.3); }
+.k-fcopy { font-size:9px; color:rgba(255,255,255,0.2); margin-top:16px; padding-top:12px; border-top:1px solid rgba(255,255,255,0.05); }
+.k-bottom-nav { position:sticky; bottom:0; background:rgba(255,255,255,0.97); backdrop-filter:blur(10px); border-top:1px solid rgba(0,0,0,0.08); display:flex; padding:7px 0 18px; z-index:40; box-shadow:0 -2px 8px rgba(0,0,0,0.05); }
+.k-nav-item { flex:1; display:flex; flex-direction:column; align-items:center; gap:2px; cursor:pointer; padding:3px 0; }
+.k-nav-emoji { font-size:18px; }
+.k-nav-label { font-size:8px; font-weight:600; color:#aaa; font-family:var(--font); }
+.k-nav-item.active .k-nav-label { color:var(--ko); }
+.k-nav-bar { width:18px; height:2.5px; background:var(--ko); border-radius:2px; margin:0 auto 2px; }
+.highlight-ring { outline: 3px solid var(--kt) !important; outline-offset: 3px; transition: outline 0.3s; }
+</style>
+</head>
+<body style="background:#0d0d14;">
+<div class="desktop-shell">
+  <div class="info-panel">
+    <div class="info-logo"><span class="club">Club </span>カテエネ</div>
+    <div class="info-subtitle">中部電力ミライズ — UIUX改善プロトタイプ</div>
+    <div class="info-badge">LIVE PROTOTYPE</div>
+    <div class="info-title">全10件の<span>改善UI</span><br>体験デモ</div>
+    <div class="info-desc">実サイトのブランドテイストを継承しながら、Nielsen 10原則 × 二重過程理論に基づく改善を統合した理想UIです。</div>
+    <div class="feat-list" id="featList">
+      <div class="feat-item" onclick="jumpTo('header')"><div class="feat-num">①②</div><div class="feat-text"><h4>CTA強化 + ナビ整理</h4><p>高コントラストCTA・ヘッダー/ボトムナビ分離</p></div></div>
+      <div class="feat-item" onclick="jumpTo('badge')"><div class="feat-num">③</div><div class="feat-text"><h4>100Pバッジ FV配置</h4><p>スクロール不要で特典が伝わる</p></div></div>
+      <div class="feat-item" onclick="jumpTo('tabs')"><div class="feat-num">④</div><div class="feat-text"><h4>申込/登録 タブ分離</h4><p>「はじめての方」「ご利用中の方」で明確化</p></div></div>
+      <div class="feat-item" onclick="jumpTo('carousel')"><div class="feat-num">⑤</div><div class="feat-text"><h4>カルーセル 1/N表示</h4><p>何枚あるか一目瞭然</p></div></div>
+      <div class="feat-item" onclick="jumpTo('news')"><div class="feat-num">⑦</div><div class="feat-text"><h4>お知らせ ポジティブ優先</h4><p>キャンペーン先頭・重要事項は別枠</p></div></div>
+      <div class="feat-item" onclick="jumpTo('plans')"><div class="feat-num">⑧</div><div class="feat-text"><h4>プランカード 説明・比較追加</h4><p>料金目安・比較ボタン</p></div></div>
+      <div class="feat-item" onclick="jumpTo('footer')"><div class="feat-num">⑨⑩</div><div class="feat-text"><h4>フッター整理・外部リンク↗</h4><p>3グループ化・外部遷移アイコン</p></div></div>
+    </div>
+    <div class="qr-section">
+      <div class="qr-label">📱 QRコードでスマホで開く</div>
+      <div class="qr-box"><div class="qr-canvas-wrap"><canvas id="qrCanvas" width="200" height="200"></canvas></div><div class="qr-info"><h5>スマホで体験</h5><p>QRコードを読み取ると<br>スマホで直接操作<br>できます</p></div></div>
+      <div class="qr-url" id="qrUrlDisplay">このHTMLファイルを<br>Webサーバーにアップロードすると<br>URLが表示されます</div>
+    </div>
+  </div>
+  <div class="phone-center">
+    <div class="phone-shell">
+      <div class="phone-notch-bar"><div class="notch-pill"></div><div class="notch-dot"></div></div>
+      <div class="phone-screen" id="phoneScreen">
+        <div class="sp-proto-banner"><span>🔶 UIUX改善プロトタイプ</span><span style="opacity:0.6;">カテエネ — 中部電力ミライズ</span></div>
+        <div class="k-status"><span class="k-time">9:41</span><span style="font-size:10px;">●●● 📶🔋</span></div>
+        <div class="k-header" id="sec-header"><div class="k-logo-wrap"><div class="k-miraiz">中部電力ミライズ</div><div class="k-logo"><span class="club">Club </span>カテエネ</div></div><div class="k-hbtns"><button class="k-btn-login">ログイン</button><button class="k-btn-reg">新規登録</button></div></div>
+        <div class="k-hero"><div class="k-hero-shapes"><div class="k-circle"></div><div class="k-wave"></div></div><div class="k-hero-top" id="sec-badge"><div class="k-hero-miraiz">中部電力ミライズ</div><div class="k-hero-logo"><span class="club">Club </span>カテエネ</div><div class="k-hero-tagline">私のいつも、暮らしのどこでも</div><div class="k-100p-badge"><div class="k-100p-coin">P</div>新規登録で <strong>100ポイント</strong>プレゼント！</div></div><div class="k-hero-photo"><img src="https://images.unsplash.com/photo-1545971642-e89e1d9e4861?w=600&q=80" alt="家族の暮らし" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><div class="fallback">家族写真</div></div><div class="k-cta-area"><button class="k-cta-main"><span>無料で会員登録する</span><span class="k-cta-arrow">›</span></button><div class="k-incentive">🎁 今なら新規登録で <span class="pt">100P</span> プレゼント！</div><button class="k-cta-sub">電気・ガスの新規お申し込み</button></div></div>
+        <div class="k-seg" id="sec-tabs"><div class="k-tabs"><button class="k-tab active" onclick="switchTab(this)">はじめての方</button><button class="k-tab" onclick="switchTab(this)">ご利用中の方</button></div><div class="k-seg-grid"><div class="k-seg-card wide"><div><div style="font-size:9px;font-weight:700;color:var(--ko);">カテエネ会員登録（無料）</div><div class="k-seg-label">今すぐ会員になる →</div></div><span style="font-size:28px;">🐱</span></div><div class="k-seg-card"><div class="k-seg-icon">⚡</div><div class="k-seg-label">電気の<br>お申し込み</div></div><div class="k-seg-card"><div class="k-seg-icon">🔥</div><div class="k-seg-label">ガスの<br>お申し込み</div></div></div></div>
+        <div class="k-section" id="sec-plans"><div class="k-sec-head"><div class="k-sec-title">我が家に<span class="acc">ぴったり</span>な<br>プランを選べる</div><div class="k-sec-more">一覧 ›</div></div><div class="k-plans"><div class="k-plan-card feat"><div style="display:flex;gap:8px;align-items:flex-start;"><div style="font-size:24px;">⚡🔥</div><div><div class="k-plan-name">電気＋ガスセットプラン</div><div class="k-plan-desc">電気とガスをまとめてお得。光熱費を一括管理できます。</div><div class="k-plan-price">月々約 ¥500〜 お得</div><div class="k-plan-link">シミュレーションする ›</div></div></div></div><div class="k-plan-card"><div class="k-plan-icon">⚡</div><div class="k-plan-name">電気プラン</div><div class="k-plan-desc">生活スタイルに合わせたプランをご提案。</div><div class="k-plan-link">詳しく見る ›</div></div><div class="k-plan-card"><div class="k-plan-icon">🔥</div><div class="k-plan-name">ガスプラン</div><div class="k-plan-desc">都市ガス・LPガスを用途に合わせて選択。</div><div class="k-plan-link">詳しく見る ›</div></div><div class="k-plan-card"><div class="k-plan-icon">🚛</div><div class="k-plan-name">引越し手続き</div><div class="k-plan-desc">Web完結で簡単に手続き。</div><div class="k-plan-link">手続きする ›</div></div></div><div class="k-compare-wrap"><button class="k-compare-btn">📊 プランを比較する</button></div></div>
+        <div class="k-section" id="sec-carousel"><div class="k-sec-head"><div class="k-sec-title"><span class="acc">ピック</span>アップ</div><div class="k-sec-more">もっと見る ›</div></div><div class="k-carousel-scroll" id="carouselEl"><div class="k-camp-card"><div class="k-camp-tag">期間限定</div><img class="k-camp-img" src="https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=400&q=80" alt="" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><div class="k-camp-img-fill" style="display:none;background:linear-gradient(135deg,#F5841F,#E83820);">画像</div><div class="k-camp-body"><div class="k-camp-title">春のポイント<br>2倍キャンペーン</div><div class="k-camp-desc">3月末まで</div><div class="k-camp-btn">詳しく見る</div></div></div><div class="k-camp-card"><div class="k-camp-tag" style="background:var(--kt);">エコ特典</div><img class="k-camp-img" src="https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400&q=80" alt="" onerror="this.style.display='none';this.nextSibling.style.display='flex'"><div class="k-camp-img-fill" style="display:none;background:linear-gradient(135deg,#009B8F,#006C65);">画像</div><div class="k-camp-body"><div class="k-camp-title">省エネ<br>チャレンジ</div><div class="k-camp-desc">ポイントゲット！</div><div class="k-camp-btn" style="background:var(--kt);">挑戦する</div></div></div><div class="k-camp-card"><div class="k-camp-tag">新規登録</div><div class="k-camp-img-fill" style="background:linear-gradient(135deg,#E83820,#C0392B);">100P</div><div class="k-camp-body"><div class="k-camp-title">新規登録で<br>100P プレゼント</div><div class="k-camp-desc">今すぐ登録！</div><div class="k-camp-btn" style="background:var(--kr);">今すぐ</div></div></div><div class="k-camp-card"><div class="k-camp-img-fill" style="background:linear-gradient(135deg,#1A2040,#2B4A8A);">光熱費節約</div><div class="k-camp-body"><div class="k-camp-title">カテエネ光<br>お得なプラン</div><div class="k-camp-desc">まとめてお得</div><div class="k-camp-btn" style="background:#1A2040;">詳しく</div></div></div></div><div class="k-ind"><div class="k-ind-count" id="carCount">1 / 8</div><div class="k-ind-dots"><div class="k-ind-dot on"></div><div class="k-ind-dot"></div><div class="k-ind-dot"></div><div class="k-ind-dot"></div><div class="k-ind-dot"></div></div></div></div>
+        <div class="k-section" id="sec-news"><div class="k-sec-head"><div class="k-sec-title"><span class="acc">お知らせ</span></div><div class="k-sec-more">一覧 ›</div></div><div class="k-important-box"><div class="k-imp-head">⚠ 重要なお知らせ</div><div class="k-imp-item">【法令書面】契約期間更新のご案内</div><div class="k-imp-item">【お詫び】時間帯別使用量の閲覧不具合について</div></div><div class="k-notice-list"><div class="k-notice-item"><span class="k-ntag cp">CP</span><span class="k-ntext">今月のクイズに回答して5Pゲットしよう！</span><span class="k-ndate">3/5</span></div><div class="k-notice-item"><span class="k-ntag cp">コラム</span><span class="k-ntext">最新コラムを読んで5Pゲットしよう！</span><span class="k-ndate">2/20</span></div><div class="k-notice-item"><span class="k-ntag info">情報</span><span class="k-ntext">アプリ ver.4.2 リリース。操作性が向上しました</span><span class="k-ndate">2/15</span></div></div></div>
+        <div class="k-section"><div class="k-sec-head"><div class="k-sec-title"><span class="acc">サポート</span></div></div><div class="k-support-grid"><div class="k-support-item"><span class="k-sup-icon">📞</span><div class="k-sup-label">電話でお問い合わせ</div></div><div class="k-support-item"><span class="k-sup-icon">💬</span><div class="k-sup-label">チャットサポート</div></div><div class="k-support-item"><span class="k-sup-icon">❓</span><div class="k-sup-label">よくある質問</div></div><div class="k-support-item"><span class="k-sup-icon">📄</span><div class="k-sup-label">各種お手続き</div></div><div class="k-support-item"><span class="k-sup-icon">📱</span><div class="k-sup-label">アプリDL</div></div><div class="k-support-item"><span class="k-sup-icon">📊</span><div class="k-sup-label">使用量確認</div></div></div></div>
+        <div id="sec-footer"><div class="k-footer"><div class="k-footer-logo"><span style="font-size:10px;font-style:italic;">Club </span>カテエネ</div><div class="k-footer-co">中部電力ミライズ株式会社</div><div class="k-fg"><div class="k-fg-title">サポート・お問い合わせ</div><div class="k-fg-links"><div class="k-flink">お問い合わせ</div><div class="k-flink">よくある質問</div><div class="k-flink">各種手続き</div></div></div><div class="k-fg"><div class="k-fg-title">規約・ポリシー</div><div class="k-fg-links"><div class="k-flink">利用規約</div><div class="k-flink">個人情報取扱い</div><div class="k-flink">特定商取引法</div></div></div><div class="k-fg"><div class="k-fg-title">関連サービス（外部）</div><div class="k-fg-links"><div class="k-flink">中部電力ミライズ <span class="ext">↗</span></div><div class="k-flink">ミライズショップ <span class="ext">↗</span></div><div class="k-flink">カテエネストア <span class="ext">↗</span></div></div></div><div class="k-fcopy">Copyright © Chubu Electric Power Miraiz Co.,Inc.</div></div></div>
+        <div class="k-bottom-nav"><div class="k-nav-item active"><div class="k-nav-bar"></div><span class="k-nav-emoji">🏠</span><span class="k-nav-label" style="color:var(--ko);">はじめての方</span></div><div class="k-nav-item"><span class="k-nav-emoji">⚡</span><span class="k-nav-label">プラン</span></div><div class="k-nav-item"><span class="k-nav-emoji">🎁</span><span class="k-nav-label">キャン</span></div><div class="k-nav-item"><span class="k-nav-emoji">👤</span><span class="k-nav-label">ログイン</span></div><div class="k-nav-item"><span class="k-nav-emoji">☰</span><span class="k-nav-label">メニュー</span></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="right-panel">
+    <div class="rp-title">セクションマップ</div>
+    <div class="scrollmap"><div class="sm-item active" onclick="jumpTo('header')"><div class="sm-dot"></div>ヘッダー / CTA<span class="sm-sev h">高</span></div><div class="sm-item" onclick="jumpTo('badge')"><div class="sm-dot"></div>100Pバッジ<span class="sm-sev h">高</span></div><div class="sm-item" onclick="jumpTo('tabs')"><div class="sm-dot"></div>タブUI<span class="sm-sev h">高</span></div><div class="sm-item" onclick="jumpTo('plans')"><div class="sm-dot"></div>プランカード<span class="sm-sev m">中</span></div><div class="sm-item" onclick="jumpTo('carousel')"><div class="sm-dot"></div>カルーセル<span class="sm-sev m">中</span></div><div class="sm-item" onclick="jumpTo('news')"><div class="sm-dot"></div>お知らせ<span class="sm-sev m">中</span></div><div class="sm-item" onclick="jumpTo('footer')"><div class="sm-dot"></div>フッター<span class="sm-sev l">低</span></div></div>
+    <div class="rp-hint">💡 左の項目をタップするとスマホ内の該当箇所に移動します。<br><br>スマホの中は直接スクロール・タップ操作も可能です。</div>
+    <button class="dl-qr-btn" onclick="downloadQR()">⬇ QRコードをダウンロード</button>
+    <div style="font-size:10px;color:#1e293b;line-height:1.6;margin-top:12px;"><strong style="color:#475569;">共有方法</strong><br>このHTMLファイルをメール添付・Google Drive・USB等でお渡しください。ブラウザで開くだけで動作します（ネット不要）。<br><br><span style="color:#334155;">WebサーバーにアップロードするとQRコードが自動更新されます。</span></div>
+  </div>
+</div>
+<script>
+function generateQR(text) {
+  const canvas = document.getElementById('qrCanvas');
+  const ctx = canvas.getContext('2d');
+  const size = 200;
+  canvas.width = size; canvas.height = size;
+  const qrImg = new Image();
+  qrImg.onload = () => { ctx.drawImage(qrImg, 0, 0, size, size); };
+  qrImg.onerror = () => { ctx.fillStyle='#fff'; ctx.fillRect(0,0,size,size); ctx.fillStyle='#1a1a1a'; ctx.font='10px sans-serif'; ctx.textAlign='center'; ctx.fillText('QRコード',size/2,100); };
+  qrImg.src = 'https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl='+encodeURIComponent(text)+'&choe=UTF-8';
+}
+function downloadQR() { const c=document.getElementById('qrCanvas'); const a=document.createElement('a'); a.download='katene_QR.png'; a.href=c.toDataURL('image/png'); a.click(); }
+try {
+  const url = window.location.href;
+  const isFile = url.startsWith('file://') || url.startsWith('data:');
+  const disp = document.getElementById('qrUrlDisplay');
+  if(isFile) { disp.innerHTML='<span style="color:#E83820;font-weight:700;">⚠ ローカルファイル</span><br>WebサーバーにアップロードするとURLが表示されます'; generateQR('https://katene.chuden.jp/'); } else { disp.textContent=url; generateQR(url); }
+  const carEl=document.getElementById('carouselEl'); const carCount=document.getElementById('carCount');
+  if(carEl) carEl.addEventListener('scroll',()=>{ const total=8; const w=carEl.scrollWidth-carEl.clientWidth; const pct=w>0?carEl.scrollLeft/w:0; const cur=Math.round(pct*(total-1))+1; carCount.textContent=cur+' / '+total; const dots=document.querySelectorAll('.k-ind-dot'); dots.forEach((d,i)=>d.classList.toggle('on',i===Math.min(cur-1,dots.length-1))); });
+  function switchTab(btn) { btn.parentNode.querySelectorAll('.k-tab').forEach(t=>t.classList.remove('active')); btn.classList.add('active'); }
+  let highlightTimer;
+  function jumpTo(section) { const secMap={header:'sec-header',badge:'sec-badge',tabs:'sec-tabs',plans:'sec-plans',carousel:'sec-carousel',news:'sec-news',footer:'sec-footer'}; const targetEl=document.getElementById(secMap[section]); const phone=document.getElementById('phoneScreen'); if(targetEl&&phone){ const pR=phone.getBoundingClientRect(); const eR=targetEl.getBoundingClientRect(); phone.scrollTop+=(eR.top-pR.top)-60; clearTimeout(highlightTimer); document.querySelectorAll('.highlight-ring').forEach(e=>e.classList.remove('highlight-ring')); targetEl.classList.add('highlight-ring'); highlightTimer=setTimeout(()=>targetEl.classList.remove('highlight-ring'),2200); } const smItems=document.querySelectorAll('.sm-item'); const order=['header','badge','tabs','plans','carousel','news','footer']; const idx=order.indexOf(section); if(smItems[idx]) smItems[idx].classList.add('active'); }
+} catch(e) { console.warn('Init error:',e); }
+</script>
+</body>
+</html>
